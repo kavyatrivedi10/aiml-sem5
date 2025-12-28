@@ -29,8 +29,9 @@ def handle_next_prompt(user_prompt: str, prev_outfit_index):
 
     from prompt_insights import parse_text
     if next_response is None:
-        print("Sever is down")
-        return
+        print("Server is down")
+        # return
+        raise Exception("Server is down")
 
     curr_categories = []
     category_dict_array = parse_text(next_response, keys=keys)

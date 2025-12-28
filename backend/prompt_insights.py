@@ -99,8 +99,8 @@ def get_prompt_insights(user_prompt):
     base_response = get_gpt_response(base_prompt, paid=True)
 
     if base_response is None:
-        print("Sever is down")
-        return
+        print("Server is down")
+        raise Exception("Server is down")
 
     print(base_response)
     top_wear, bottom_wear, foot_wear, accessories = parse_text(base_response, keys)

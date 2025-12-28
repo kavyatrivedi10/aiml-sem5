@@ -71,7 +71,6 @@ def analyse_user_purchase_insights_simple(user_purchase_csv):
     return pinecone_queries
 
 def analyse_user_prompt_insights(user_prompt):
-
     top_wear, bottom_wear, foot_wear, accessories = get_prompt_insights(user_prompt=user_prompt)
     user_prompt_insights = [top_wear, bottom_wear, foot_wear, accessories]
     print("user_prompt_insights:", user_prompt_insights)

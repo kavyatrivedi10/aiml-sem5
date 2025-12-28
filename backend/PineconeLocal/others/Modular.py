@@ -124,8 +124,9 @@ def main():
         pinecone_index.upsert(upserts)
         # print(index)
         # print(type(pinecone_index))
-# show index description after uploading the documents
-pinecone_index.describe_index_stats()
+
+        # show index description after uploading the documents
+        pinecone_index.describe_index_stats()
 
 if __name__ == "__main__":
     main()

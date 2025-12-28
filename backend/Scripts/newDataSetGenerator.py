@@ -85,6 +85,7 @@ for filename in os.listdir(input_folder):
                 # file_count += 1
             except json.JSONDecodeError:
                 print(f"Error decoding JSON in file: {filename}")
+                raise
 
 # Create a pandas DataFrame from the extracted data
 df = pd.DataFrame(output_data)

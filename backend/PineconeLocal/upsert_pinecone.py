@@ -49,9 +49,9 @@ def insert_data_parallel(pinecone_index, model, bm25, data, batch_size=200, num_
                 cols_to_consider = ['product_display_name', 'master_category', 'sub_category', 'color', 'pattern', 'occasion', 'sleeve_styling', 'sleeve_length', 'fabric', 'neck']
                 cols_for_pinecone_query = data_batch[cols_to_consider]
                 pinecone_query_string = [" ".join(str(val) for col, val in row.items() if val != 'none') for _, row in cols_for_pinecone_query.iterrows()]
-                
+
                 # img_batch = images[i:i_end]
-                
+
                 img_batch = []
                 for x in meta_dict: 
                     currImageId=x["id"]

@@ -1,11 +1,18 @@
-import os
+import os, time
+from dotenv import find_dotenv, load_dotenv
+# Load environment variables from the root .env file
+root_env_path = find_dotenv()
+load_dotenv(root_env_path)
 
-import openai
+from openai import OpenAI
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+bot = client.chat.completions
+
 from fastapi import HTTPException
 categories = ['topwear','bottomwear','footwear','accessories']
 keys = ['category', 'color', 'article_type', 'brand_name', 'occasion', 'other_info']
-SYSTEM_PROMPT = f'''
-You are E-Commerce GPT, a professional Analyst from Fashion E-commerce industry with expertise in analysing user needs
+SYSTEM_PROMPT = f'''You are E-Commerce GPT, a professional Analyst from Fashion E-commerce industry with expertise in analysing user needs
 As E-Commerce GPT, generate key-value pairs for all four categories: {categories} \n
 based on the user prompt. Extract and assign values based on the specific 
 keys: {keys}. If a key's value is missing, use 'none'.
@@ -19,11 +26,9 @@ from dotenv import find_dotenv,load_dotenv
 root_env_path = find_dotenv()
 load_dotenv(root_env_path)
 
-openai.api_key = os.getenv("OPEN_AI_API_KEY")
 def process_message(message):
     message_text = message['text']
     return message_text
-
 
 # def system_prompt():
 #     global messages
@@ -47,10 +52,9 @@ def chat_bot():
                     {"role": "user", "content": user_prompt},
                 )
 
-            openai_response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=messages
-            )
+            print("========================== TESTING ==========================")
+
+            openai_response = bot.create(model="gpt-3.5-turbo", messages=messages)
 
             reply = openai_response.choices[0].message.content
             completion_tokens = openai_response.usage.completion_tokens
@@ -61,8 +65,10 @@ def chat_bot():
             print("prompt_tokens", prompt_tokens)
             print("total_tokens", total_tokens)
             messages.append({"role": "assistant", "content": reply})
+            time.sleep(5)
     except Exception as e:
         print("Exception occurred", e)
+        raise
 
 PINECONE_INFO_PROMPT = '''
 This is for your context: These are the 4 Items Pinecone results have given us based on the search, now these are shown to user: \n
@@ -89,10 +95,7 @@ def fetch_paid_openai_response(user_prompt: str):
         global chat_history
         chat_history.append({"role": "user", "content": user_prompt})
         print("Waiting for Paid open ai response")
-        openai_response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=chat_history
-        )
+        openai_response = client.chat.completions.create(model="gpt-3.5-turbo", messages=chat_history)
 
         reply = openai_response.choices[0].message.content
         completion_tokens = openai_response.usage.completion_tokens

@@ -82,7 +82,7 @@ def main(user_prompt):
     print("pinecone_filters:", pinecone_filters)
     print("pinecone_queries", pinecone_queries)
     print("pinecone_queries_purchase", pinecone_queries_purchase)
-    outfit = get_outfit_from_prompt(user_prompt)
+    outfit = get_outfit_from_prompt(user_prompt, user_purchase_csv)
     print("\noutfit is: \n", outfit)
 
 

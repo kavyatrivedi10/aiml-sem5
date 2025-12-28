@@ -1,6 +1,7 @@
 import os
 import requests
 from dotenv import find_dotenv, load_dotenv
+
 # Load environment variables from the root .env file
 root_env_path = find_dotenv()
 load_dotenv(root_env_path)
@@ -32,16 +33,17 @@ def get_top_media_with_captions(user_id, access_token):
         print("Error fetching data")
         return []
 
-if __name__ == "__main__":
+def main():
+    SAVE_DIRECTORY = "scrapped_images"
+    if not os.path.exists(SAVE_DIRECTORY):
+        os.makedirs(SAVE_DIRECTORY)
+
+    return # I do not want to give Instagram access
+
     # Replace these with your actual user ID and access token
     USER_ID = os.getenv("USER_ID")
     ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
-    SAVE_DIRECTORY = "scrapped_images"
-
     top_media_with_captions = get_top_media_with_captions(USER_ID, ACCESS_TOKEN)
-
-    if not os.path.exists(SAVE_DIRECTORY):
-        os.makedirs(SAVE_DIRECTORY)
 
     for media in top_media_with_captions[:10]:  # Limit to top 10
         media_id = media.get("id")
@@ -58,3 +60,6 @@ if __name__ == "__main__":
         if media_url and media_type == "IMAGE":
             filename = f"{media_id}.jpg"
             save_image(media_url, SAVE_DIRECTORY, filename)
+
+if __name__ == "__main__":
+    main()
