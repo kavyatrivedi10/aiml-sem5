@@ -70,8 +70,8 @@ def chat_bot():
         print("Exception occurred", e)
         raise
 
-PINECONE_INFO_PROMPT = '''
-This is for your context: These are the 4 Items Pinecone results have given us based on the search, now these are shown to user: \n
+DATABASE_INFO_PROMPT = '''
+This is for your context: These are the 4 Items database results have given us based on the search, now these are shown to user: \n
 '''
 
 def build_pinecone_information_prompt(pinecone_output: str):
@@ -81,7 +81,7 @@ def build_pinecone_information_prompt(pinecone_output: str):
         based on that generate key-value pair like before, if user wants to change something include that as value for that key.
         if user doesn't want any change values should be 'none', keys:{keys} \n, eg: accessories_to_change: True or False
         For categories that don't need to be changed only return to_change key, now wait & reply only with 'okay' if understood '''
-    pinecone_information_prompt = f"{PINECONE_INFO_PROMPT} \n {pinecone_output} \n {end_prompt}"
+    pinecone_information_prompt = f"{DATABASE_INFO_PROMPT} \n {pinecone_output} \n {end_prompt}"
     return pinecone_information_prompt
 
 

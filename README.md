@@ -6,7 +6,7 @@
 
 1. Interface & Processing: OpenAI API,
 2. Dataset: Refined an existing dataset picked up from Kaggle, can be found here: https://www.kaggle.com/datasets/paramaggarwal/fashion-product-images-dataset
-3. Vector Database: Pinecone to store vector embedding of the products data of the kaggle dataset
+3. Vector Database: PostgreSQL with pgvector extension to store vector embedding of the products data of the kaggle dataset
 4. Backend: Python FastAPI
 5. Frontend: ReactJS
 
@@ -28,31 +28,58 @@
 
 ### Backend:
 
-navigate to the backend repository, create a virtual python enviroment.
+1. **Install PostgreSQL and pgvector extension:**
+   - Install PostgreSQL (version 11 or higher)
+   - Install pgvector extension:
+     ```bash
+     # On macOS with Homebrew
+     brew install pgvector
+     
+     # Or compile from source: https://github.com/pgvector/pgvector
+     ```
+   - Enable the extension in your PostgreSQL database:
+     ```sql
+     CREATE EXTENSION vector;
+     ```
 
-`python -m venv env`
+2. **Setup Python environment:**
+   - Navigate to the backend repository, create a virtual python environment:
+     `python -m venv env`
+   
+   - Activate the environment:
+     - On macOS/Linux: `source env/bin/activate`
+     - On Windows: `env\Scripts\activate`
+   
+   - Install Backend dependencies:
+     `pip install -r requirements.txt`
 
-Activate the enviroment
+3. **Initialize the database:**
+   - Run the database setup script to create tables and indexes:
+     `python setup_database.py`
+   - This will create the `products` table with pgvector support
 
-`src/Scripts/activate`
-
-Navigate to the file of requirements.txt and run
-Install Backend dependancies using
-
-`pip install -r requirements `
-
-Navigate to the root backend directory and run the command of
-`python server.py`
-to start the FastAPI backend server.
+4. **Start the FastAPI server:**
+   - Navigate to the root backend directory and run:
+     `python server.py`
+   - This will start the FastAPI backend server on port 8122
 
 ### Env File
 
 Create a .env file at the root director which should have the following variables-
 
-`PINECONE_API_KEY = "your api key"
+`POSTGRES_HOST = "localhost"  # or your PostgreSQL host
 `
 
-`PINECONE_ENVIRONMENT = "your env"
+`POSTGRES_PORT = "5432"  # default PostgreSQL port
+`
+
+`POSTGRES_DB = "fashion_db"  # your database name
+`
+
+`POSTGRES_USER = "postgres"  # your PostgreSQL username
+`
+
+`POSTGRES_PASSWORD = "postgres"  # your PostgreSQL password
 `
 
 `OPEN_AI_API_KEY = "YOUR_API_KEY_HERE"
@@ -191,21 +218,21 @@ Gathering insights about the user, before suggesting outfit.
 
 ### Searching the VectorDB
 
-The three type of insights generated in the previous step are combined to generate a query to be used for searching in pinecone.
+The three type of insights generated in the previous step are combined to generate a query to be used for searching in PostgreSQL.
 
 - ### Step 4
 
   - Processing Insights
     - **Problem** : We need to process K-V pairs from insights to form a usable search query for
-      pinecone
+      PostgreSQL
     - **Solution** : We combine the K-V pairs from the insights to generate search query & filters for
-      pinecone, later converted to embeddings for searching.
+      PostgreSQL, later converted to embeddings for searching.
 
 - ### Step 5
 
   - Searching in Database:
     - **Problem** : Searching our database to find matching outfits for user query.
-    - **Solution** : We upsert vector embeddings for both text & images of our dataset to Pinecone. Embedding generated from query is searched on Pinecone. Now a multi modal search is performed ( CLIP – for image embeddings, BM25 – to generate text embeddings).
+    - **Solution** : We upsert vector embeddings for both text & images of our dataset to PostgreSQL with pgvector extension. Embedding generated from query is searched on PostgreSQL. Now a multi modal search is performed ( CLIP – for image embeddings, BM25 – to generate text embeddings).
 
 - ### Step 6
 
@@ -216,8 +243,8 @@ The three type of insights generated in the previous step are combined to genera
 - ### Step 7
 
   - Incorporating the user requested outfit changes
-    - **Problem**: Making changes to the outfit according to the user’s changing prompt.
-    - **Solution**: GPT API identifies what needs to be changed and based on that VectorDB is
+    - **Problem**: Making changes to the outfit according to the user's changing prompt.
+    - **Solution**: GPT API identifies what needs to be changed and based on that PostgreSQL database is
       searched again.
 
 ## **Limitations**

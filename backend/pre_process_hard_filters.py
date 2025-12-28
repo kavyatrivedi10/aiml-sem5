@@ -2,7 +2,7 @@ from get_filters_from_insights import analyse_user_prompt_insights, analyse_user
     categorize_filters, unique_array_dict
 from prompt_insights import get_prompt
 from PineconeLocal.utils.filters import build_hard_filters
-from PineconeLocal.query_pinecone import run_pinecone_query
+from PineconeLocal.query_postgres import run_postgres_query
 
 def pre_process_filters(user_prompt, user_purchase_csv, change_prompt_insights=None, change_prompt=False):
     if change_prompt:
@@ -131,7 +131,7 @@ def process_category(category,index, filters, queries, queries_purchase):
     print("Category Query:")
     print(category_query)
 
-    category_outfit = run_pinecone_query(category_query, category_filters)
+    category_outfit = run_postgres_query(category_query, category_filters)
     print("\nGenerated Outfit for", category, "is:", category_outfit)
     print("\n--------------------------\n")
     return category_outfit
